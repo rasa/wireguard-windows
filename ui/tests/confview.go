@@ -6,13 +6,13 @@
 package main
 
 import (
+	"log"
+	"runtime"
+
 	"github.com/lxn/walk"
 	"golang.zx2c4.com/wireguard/windows/conf"
 	"golang.zx2c4.com/wireguard/windows/ui"
-	"log"
-	"runtime"
 )
-
 
 const demoConfig = `[Interface]
 PrivateKey = 6KpcbNFK4tKBciKBT2Rj6Z/sHBqxdV+p+nuNA5AlWGI=
@@ -25,7 +25,7 @@ Endpoint = demo.wireguard.com:12912
 AllowedIPs = 0.0.0.0/0
 `
 
-func main(){
+func main() {
 	mw, _ := walk.NewMainWindowWithName("Test ConfView")
 	mw.SetSize(walk.Size{600, 800})
 	mw.SetLayout(walk.NewVBoxLayout())
@@ -36,14 +36,15 @@ func main(){
 	config, _ := conf.FromWgQuick(demoConfig, "demo")
 	peer := config.Peers[0]
 	config.Peers = make([]conf.Peer, 0)
+	cv.SetConfiguration(config)
 
 	pb1, _ := walk.NewPushButton(mw)
 	pb1.SetText("Add and increment")
 	pb1.Clicked().Attach(func() {
 		config.Interface.ListenPort++
 		config.Peers = append(config.Peers, peer)
-		k,_ :=  conf.NewPrivateKey()
-		config.Peers[len(config.Peers) - 1].PublicKey = *k
+		k, _ := conf.NewPrivateKey()
+		config.Peers[len(config.Peers)-1].PublicKey = *k
 		cv.SetConfiguration(config)
 	})
 	pb2, _ := walk.NewPushButton(mw)
