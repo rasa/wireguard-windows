@@ -10,7 +10,6 @@ import (
 	"bytes"
 	"fmt"
 	"image"
-	"log"
 	"strings"
 	"syscall"
 	"unsafe"
@@ -259,6 +258,10 @@ type Window interface {
 
 	// Visible returns if the Window is visible.
 	Visible() bool
+
+	// VisibleChanged returns an Event that you can attach to for handling
+	// visible changed events for the Window.
+	VisibleChanged() *Event
 
 	// Width returns the outer width of the Window, including decorations.
 	Width() int
@@ -1004,6 +1007,12 @@ func (wb *WindowBase) SetVisible(visible bool) {
 	wb.visibleChangedPublisher.Publish()
 }
 
+// VisibleChanged returns an Event that you can attach to for handling
+// visible changed events for the Window.
+func (wb *WindowBase) VisibleChanged() *Event {
+	return wb.visibleChangedPublisher.Event()
+}
+
 func setWindowVisible(hwnd win.HWND, visible bool) {
 	var cmd int32
 	if visible {
@@ -1653,7 +1662,6 @@ func (wb *WindowBase) backgroundEffective() (Brush, Window) {
 
 					widget, _ = parent.(Widget)
 				} else {
-					log.Printf("*WindowBase.backgroundEffective - breaing out of infinite loop - bg: %T, wnd: %T %s %d", bg, wnd, wnd.Name(), wnd.Handle())
 					break
 				}
 			} else {
