@@ -46,13 +46,14 @@ func NewManageTunnelsWindow(icon *walk.Icon) (*ManageTunnelsWindow, error) {
 func (mtw *ManageTunnelsWindow) setup() error {
 	mtw.SetIcon(mtw.icon)
 	mtw.SetSize(walk.Size{900, 600})
-	mtw.SetLayout(walk.NewVBoxLayout())
+	mtw.SetLayout(walk.NewHBoxLayout())
 	mtw.Closing().Attach(func(canceled *bool, reason walk.CloseReason) {
 		// "Close to tray" instead of exiting application
 		onQuit()
 	})
 
-	splitter, _ := walk.NewHSplitter(mtw)
+	// TODO: Using a splitter layout hides the confview before resizing
+	splitter := mtw
 
 	tunnelsContainer, _ := walk.NewComposite(splitter)
 	tunnelsContainer.SetLayout(walk.NewVBoxLayout())
