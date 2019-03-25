@@ -305,6 +305,7 @@ func (cv *ConfView) setConfiguration(c *conf.Config) {
 		suspend()
 		delete(cv.peers, *k)
 		groupBox := pv.publicKey.label.Parent().AsContainerBase().Parent().(*walk.GroupBox)
+		groupBox.SetVisible(false)
 		groupBox.Parent().Children().Remove(groupBox)
 		groupBox.Dispose()
 	}
